@@ -1,65 +1,81 @@
 stages:
   - install
-  - lint
+  - analize
   - test
   - build
   - deploy
 
 image: node:12
 
+cache: &global_cache
+  key: node_modules_cache
+  paths:
+    - node_modules/
+  policy: pull-push
+
 install:
   stage: install
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - node_modules/
+    # inherit all global cache settings
+    <<: *global_cache
     policy: push
+  only:
+    changes:
+      - package-lock.json
   script:
     - npm ci
 
 lint:
-  stage: lint
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - node_modules/
-    policy: pull
+  stage: analize
   dependencies:
-      - install
-  script:
-    - npm run lint
+    - install
+  cache:
+    <<: *global_cache
+    policy: pull
   only:
     changes:
       - src/**/*
       - tests/**/*
+  script:
+    - npm run lint
+
+audit:
+  stage: analize
+  dependencies:
+    - install
+  cache:
+    <<: *global_cache
+    policy: pull
+  only:
+    changes:
+      - package-lock.json
+  script:
+    - npm audit
+  allow_failure: true
 
 test:
   stage: test
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - node_modules/
-    policy: pull
-  script:
-    - npm run test --ci
   dependencies:
     - lint
+  cache:
+    <<: *global_cache
+    policy: pull
   only:
     changes:
       - src/**/*
       - tests/**/*
+  script:
+    - npm run test
 
 build:
   stage: build
+  dependencies:
+    - test
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - node_modules/
+    <<: *global_cache
     policy: pull
   script:
     - npm run build
-  dependencies:
-    - test
   artifacts:
     paths:
       - dist
