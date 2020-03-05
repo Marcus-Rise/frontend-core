@@ -1,0 +1,32 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "esmodules": true
+        }
+      }
+    ]
+  ],
+  "compact": false,
+  "retainLines": true,
+  "minified": false,
+  "inputSourceMap": false,
+  "sourceMaps": false,
+  "plugins": [
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-proposal-optional-chaining",
+    [
+      "module-resolver",
+      {
+        "root": [
+          "./dist"
+        ],
+        "alias": {
+          "@": "./dist"
+        }
+      }
+    ]
+  ]
+}

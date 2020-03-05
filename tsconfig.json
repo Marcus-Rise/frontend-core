@@ -1,0 +1,57 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "strict": true,
+        "jsx": "preserve",
+        "importHelpers": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "typeRoots": [
+            "./node_modules/@types",
+            "./types"
+        ],
+        "types": [
+            "jest",
+            "node"
+        ],
+        "outDir": "dist",
+        "baseUrl": "./",
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ],
+            "$/*": [
+                "./tests/unit/*"
+            ]
+        },
+        "plugins": [
+            {
+                "transform": "typescript-transform-paths"
+            }
+        ],
+        "lib": [
+            "esnext",
+            "dom",
+            "dom.iterable",
+            "scripthost"
+        ]
+    },
+    "include": [
+        "tests/unit/**/*.ts",
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

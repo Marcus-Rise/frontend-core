@@ -1,0 +1,75 @@
+stages:
+  - install
+  - lint
+  - test
+  - build
+  - deploy
+
+image: node:12
+
+install:
+  stage: install
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+    policy: push
+  script:
+    - npm ci
+
+lint:
+  stage: lint
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+    policy: pull
+  dependencies:
+      - install
+  script:
+    - npm run lint
+  only:
+    changes:
+      - src/**/*
+      - tests/**/*
+
+test:
+  stage: test
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+    policy: pull
+  script:
+    - npm run test --ci
+  dependencies:
+    - lint
+  only:
+    changes:
+      - src/**/*
+      - tests/**/*
+
+build:
+  stage: build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+    policy: pull
+  script:
+    - npm run build
+  dependencies:
+    - test
+  artifacts:
+    paths:
+      - dist
+
+deploy:
+  stage: deploy
+  script:
+    - npm config set //registry.npmjs.org/:_authToken="${NPM_AUTH_TOKEN}"
+    - npm publish --verbose --access public
+  dependencies:
+    - build
+  only:
+    - tags
