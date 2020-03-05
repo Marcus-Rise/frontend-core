@@ -82,6 +82,7 @@ build:
 
 deploy:
   stage: deploy
+  cache: {}
   script:
     - npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
     - npm publish --verbose --access public
